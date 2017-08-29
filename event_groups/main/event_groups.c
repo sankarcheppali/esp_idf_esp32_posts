@@ -51,7 +51,7 @@ void printWiFiDiscntdMsg(void *pvParam){
         printf("----WiFi disconnected from AP----\n");
     }
 }
-
+    
 void app_main()
 {	
     wifi_event_group = xEventGroupCreate();
