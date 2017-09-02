@@ -1,4 +1,8 @@
 
+/*
+with TIMER_FINE_ADJ factor of 1.4 , the pulse width is 0.9981 ms (500.9Hz)
+By making TIMER_FINE_ADJ 0, we brought down the error, now it is 499.9Hz
+*/
 #include <stdio.h>
 #include "esp_types.h"
 #include "freertos/FreeRTOS.h"
@@ -13,7 +17,7 @@
 #define TIMER_GROUP    TIMER_GROUP_0     /*!< Test on timer group 0 */
 #define TIMER_DIVIDER   80               /*!< Hardware timer clock divider, 80 to get 1MHz clock to timer */
 #define TIMER_SCALE    (TIMER_BASE_CLK / TIMER_DIVIDER)  /*!< used to calculate counter value */
-#define TIMER_FINE_ADJ   (1.4*(TIMER_BASE_CLK / TIMER_DIVIDER)/1000000) /*!< used to compensate alarm value */
+#define TIMER_FINE_ADJ   (0*(TIMER_BASE_CLK / TIMER_DIVIDER)/1000000) /*!< used to compensate alarm value */
 #define TIMER_INTERVAL0_SEC   (0.001)   /*!< test interval for timer 0 */
 
 volatile int cnt = 0;
@@ -60,5 +64,6 @@ void app_main()
 {	
     //GPIO_NUM_16 is G16 on board
     gpio_set_direction(GPIO_NUM_16,GPIO_MODE_OUTPUT);
-
+    printf("timer_group demo \n");
+    example_tg0_timer0_init();
 }

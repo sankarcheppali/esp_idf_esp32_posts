@@ -13,9 +13,10 @@
 #include "lwip/netdb.h"
 #include "lwip/dns.h"
 
-#define SSID "DangerVirus"
-#define PASSPHARSE "abivarsh@2016"
+#define SSID "SSID"
+#define PASSPHARSE "PASSWORD"
 #define MESSAGE "HelloTCPServer"
+#define TCPServerIP "IP of the TCP server"
 
 static EventGroupHandle_t wifi_event_group;
 const int CONNECTED_BIT = BIT0;
@@ -64,7 +65,7 @@ static void initialise_wifi(void)
 void tcp_client(void *pvParam){
     ESP_LOGI(TAG,"tcp_client task started \n");
     struct sockaddr_in tcpServerAddr;
-    tcpServerAddr.sin_addr.s_addr = inet_addr("192.168.1.100");
+    tcpServerAddr.sin_addr.s_addr = inet_addr(TCPServerIP);
     tcpServerAddr.sin_family = AF_INET;
     tcpServerAddr.sin_port = htons( 3010 );
     int s, r;
