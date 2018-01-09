@@ -113,6 +113,12 @@ void app_main()
 {	
     ESP_ERROR_CHECK( esp_event_loop_init(event_handler, NULL) );
     wifi_event_group = xEventGroupCreate();
+    esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES) {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK( ret );
     initialise_wifi();
     xTaskCreate(&tcp_client,"tcp_client",4048,NULL,5,NULL);
 }
