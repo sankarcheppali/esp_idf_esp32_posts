@@ -32,7 +32,8 @@ void IRAM_ATTR timer_group0_isr(void *para){// timer group 0, ISR
           cnt++;
       }
 }
-static void example_tg0_timer0_init()
+
+static void tg0_timer0_init()
 {
     int timer_group = TIMER_GROUP_0;
     int timer_idx = TIMER_0;
@@ -65,5 +66,5 @@ void app_main()
     //GPIO_NUM_16 is G16 on board
     gpio_set_direction(GPIO_NUM_16,GPIO_MODE_OUTPUT);
     printf("timer_group demo \n");
-    example_tg0_timer0_init();
+    tg0_timer0_init();
 }

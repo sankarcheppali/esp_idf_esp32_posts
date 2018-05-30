@@ -1,0 +1,15 @@
+eclipse.preferences.version=1
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.882245595.697717358/BATCH_BUILD/delimiter=;
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.882245595.697717358/BATCH_BUILD/operation=append
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.882245595.697717358/BATCH_BUILD/value=1
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.882245595.697717358/IDF_PATH/delimiter=;
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.882245595.697717358/IDF_PATH/operation=replace
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.882245595.697717358/IDF_PATH/value=F\:\\binaries\\msys32_jan_10_18\\home\\sanka\\esp-idf
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.882245595.697717358/PATH/delimiter=;
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.882245595.697717358/PATH/operation=replace
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.882245595.697717358/PATH/value=F\:\\binaries\\msys32_jan_10_18\\usr\\bin;F\:\\binaries\\msys32_jan_10_18\\mingw32\\bin;F\:\\binaries\\msys32_jan_10_18\\opt\\xtensa-esp32-elf\\bin
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.882245595.697717358/V/delimiter=;
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.882245595.697717358/V/operation=append
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.882245595.697717358/V/value=1
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.882245595.697717358/append=true
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.882245595.697717358/appendContributed=true

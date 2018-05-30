@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    <div id="react-form"></div>
+     <div id="react-root"></div>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/react@15.4.2/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15.4.2/dist/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.29/browser.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" async></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+    <script type="text/babel">
+function connectMQ(host,port,username,password){
+    var clientId = "ws" + Math.random();
+        var client = new Paho.MQTT.Client(host, parseInt(port), clientId);
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
+        let connected = false
+        // connect the client
+        client.connect({
+          useSSL: true,
+          userName: username,
+          password: password,
+          onSuccess: onConnect,
+          onFailure: onFailure
+        });
+
+        function onConnect() {
+          // Once a connection has been made, make a subscription and send a message.
+          console.log("onConnect");
+          connected = true;
+          client.subscribe("/from/esp32/gpio/");
+          updateUI();
+        }
+        function onConnectionLost(responseObject) {
+            connected=false
+            console.log("onConnectionLost:", responseObject.errorMessage);
+        }
+        function onFailure(invocationContext, errorCode, errorMessage) {
+            connected=false
+          var errDiv = document.getElementById("error");
+          console.log( "Could not connect to WebSocket server, most likely you're behind a firewall that doesn't allow outgoing connections");
+          updateUI();
+        }
+        function onMessageArrived(message) {
+          let msg=message.payloadString;
+          console.log(msg);
+        }
+
+        function sendUpdate(data){
+            let message = new Paho.MQTT.Message(JSON.stringify(data));
+            message.destinationName = "/to/esp32/gpio/";
+            client.send(message);
+        }
+        const data=[{status:false,id:1,lable:'GPIO 4'},{status:false,id:2,lable:'GPIO 5'},
+        {status:false,id:3,lable:'GPIO 16'},{status:false,id:4,lable:'GPIO 17'}]
+        function updateUI(){
+            ReactDOM.render(<MyBoard switches={data} sendUpdate={sendUpdate} connected={connected}/>,document.getElementById('react-root'))
+        }
+}
+
+ function GetForm(){
+     let _host,_port,_username,_password
+    const connect=(e)=>{
+        console.log("intiating connection to mq:"+_host.value,_port.value,_username.value)
+        connectMQ(_host.value,_port.value,_username.value,_password.value)
+    }
+    return (
+        <div>
+        <div className="row">
+                  <div className="col-lg-2">
+                    <div className="form-group">
+                      <label htmlFor="hostInput">Host</label>
+                      <input defaultValue="m20.cloudmqtt.com" type="text" ref={(input)=>{_host=input}}className="form-control" id="hostInput" />
+                    </div>
+                  </div>
+                  <div className="col-lg-2">
+                    <div className="form-group">
+                      <label htmlFor="portInput">WebSocket Port</label>
+                      <input defaultValue="38747" type="text" ref={port=>_port=port} className="form-control" id="portInput"/>
+                    </div>
+                  </div>
+                </div>
+                  <div className="row">
+                  <div className="col-lg-2">
+                    <div className="form-group">
+                      <label htmlFor="userInput">Username</label>
+                      <input defaultValue="ijdmumlq" type="text" ref={username=>_username=username} className="form-control" id="userInput"/>
+                    </div>
+                  </div>
+
+                  <div className="col-lg-2">
+                    <div className="form-group">
+                      <label htmlFor="passInput">Password</label>
+                      <input defaultValue="eix8-1GsurOQ" type="password" ref={password=>_password=password} className="form-control" id="passInput"/>
+                    </div>
+                  </div>
+                  
+                  <div className="col-lg-1">
+                    <div className="form-group">
+                      <label htmlFor="clientConnectButton">Connect</label>
+                      <a id="clientConnectButton" className="btn btn-default" onClick={connect}>Connect</a>
+                    </div>
+                  </div>
+                </div>
+                </div>
+    )
+ }
+
+function MySwitch({lable,id,status,cb}) {
+    const handleBtnClick=(id)=>{
+        return ()=>cb(id)
+    }
+    return (
+                <button type="button" onClick={handleBtnClick(id)} className={ status ? "btn btn-success" :"btn btn-primary"}>
+                    {lable}
+                </button>
+        
+    )
+}
+
+  class MyBoard extends React.Component{
+      constructor(props){
+          super(props)
+          this.state = props
+          this.handleBtnClick= this.handleBtnClick.bind(this)
+      }
+      componentWillReceiveProps(nextProps){
+          console.log("porps updated")
+          this.setState(nextProps)
+      }
+
+      handleBtnClick(id){
+          console.log(id)
+          const switches=this.state.switches.map((item)=>{
+              const status = !item.status
+              return item.id == id ? {...item,status} : item
+              //return item
+          }) 
+          this.props.sendUpdate({...this.state,switches})
+          this.setState({...this.state,switches});
+          console.log(this.state)
+
+      }
+      render(){
+            return (<div  className="btn-group">
+                <label>MQTT Status: {this.state.connected ? "Connected":"Disconnected"}</label>
+                <br/>
+                {this.state.switches.map((item,i) => <MySwitch key={i}  {...item} cb={this.handleBtnClick}/> )}
+            </div>)
+      }
+    }
+
+        ReactDOM.render(<GetForm  />,document.getElementById('react-form'))
+       
+    </script>
+
+</body>
+</html>
