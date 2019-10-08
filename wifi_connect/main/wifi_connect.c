@@ -52,6 +52,10 @@ static void initialise_wifi(void)
     ESP_ERROR_CHECK( esp_wifi_init(&cfg) );
     ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
     ESP_ERROR_CHECK( esp_wifi_start() );
+    esp_err_t ret = tcpip_adapter_set_hostname(TCPIP_ADAPTER_IF_STA ,"icircuit");
+    if(ret != ESP_OK ){
+      ESP_LOGE(MAIN_TAG,"failed to set hostname:%d",ret);  
+    }
 }
 
 void printWiFiIP(void *pvParam){
@@ -68,6 +72,11 @@ void app_main()
 {	
     ESP_ERROR_CHECK( esp_event_loop_init(event_handler, NULL) );
     wifi_event_group = xEventGroupCreate();
+    esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES) {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        ret = nvs_flash_init();
+    }
     initialise_wifi();
     xTaskCreate(&printWiFiIP,"printWiFiIP",2048,NULL,5,NULL);
 }
